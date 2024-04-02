@@ -1,7 +1,7 @@
-from aws_cdk import CfnOutput
 from aws_cdk.aws_apigateway import AuthorizationType, LambdaIntegration, RestApi
 from aws_cdk.aws_iam import Role, ServicePrincipal
 from aws_cdk.aws_lambda import Function
+from aws_cdk.aws_ssm import StringParameter
 from constructs import Construct
 
 
@@ -20,7 +20,7 @@ class ApiGatewayConstruct(Construct):
         remove_artists_lambda: Function,
         access_token_lambda: Function,
         get_artist_id_lambda: Function,
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(scope, id, **kwargs)
 
@@ -43,13 +43,6 @@ class ApiGatewayConstruct(Construct):
             rest_api_name='ApiForClientInvokes',
             description="API Gateway for Lambdas invoked from client.",
             policy=api_gateway_role.assume_role_policy,
-        )
-
-        CfnOutput(
-            self,
-            'ApiGatewayEndpoint',
-            value=self._api.url,
-            description='Api Gateway Endpoint URL Export',
         )
 
         # Lambda Integrations
@@ -91,4 +84,13 @@ class ApiGatewayConstruct(Construct):
         remove_artist_resource = artist_resource
         remove_artist_resource.add_method(
             'DELETE', remove_artist_integration, authorization_type=AuthorizationType.IAM
+        )
+
+        # Store the API Gateway URL in SSM for CLI users
+        endpoint_url_param = StringParameter(
+            self,
+            'ApiGwUrlParameter',
+            description='API Gateway Endpoint Url',
+            parameter_name=f'/Spotificity/ApiGatewayEndpointUrl/beta',
+            string_value=self._api.url,
         )
