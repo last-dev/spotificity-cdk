@@ -53,6 +53,7 @@ class NotifierConstruct(Construct):
             description='Publishes a message to a SNS topic if there are currently no artists in the table',
             function_name=email_if_no_artists_lambda_name,
             runtime=Runtime.PYTHON_3_12,
+            timeout=Duration.seconds(30),
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='message_if_no_artists.handler',
             environment={'SNS_TOPIC_ARN': _topic.topic_arn},
