@@ -1,0 +1,12 @@
+[flake8]
+ignore = 
+    # Whitespace before ':' (conflict with Black formatter)
+    E203,  
+    # Too many leading '#' for block comment
+    E266,  
+    # Line break occurred before a binary operator (conflict with Black formatter)
+    W503,  
+    # Line too long (handled by Black with max_line_length set to 100)
+    E501   
+max_line_length = 100
+exclude = cdk.out, .venv, __pycache__, .git, colors.py

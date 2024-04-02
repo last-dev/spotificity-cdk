@@ -1,0 +1,25 @@
+[tool.pytest.ini_options]
+cache_dir = "projects/.cache"
+addopts = "-v --color=yes"
+testpaths = ["tests"]
+
+[tool.black]
+skip-string-normalization = true
+line-length = 100
+extend-exclude = '''
+(
+    cdk\.out
+  | ^/\.venv
+  | __pycache__
+  | \.git
+  | colors\.py
+  | ^/\.cache
+)
+'''
+
+[tool.isort]
+known_first_party = ["cdk", "cli"]
+skip = ["cdk.out", ".venv", "__pycache__", ".git"]
+line_length = 100
+profile = "black"
+verbose = true
