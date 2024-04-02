@@ -29,13 +29,13 @@ accounts: dict[str, Account] = {
         stage=Stage.Beta,
         region=AwsRegion.IAD,
         disambiguator=f'spotificity',
-        api_gw_endpoint_ssm_param_name='/Spotificity/ApiGatewayEndpoint/beta',
+        api_gw_endpoint_ssm_param_name='/Spotificity/ApiGatewayEndpointUrl/beta',
     ),
     'Prod': Account(
         account_id=os.environ['SPOTIFICITY_PROD_ACCT'],
         stage=Stage.Prod,
         region=AwsRegion.IAD,
         disambiguator=f'spotificity',
-        api_gw_endpoint_ssm_param_name='/Spotificity/ApiGatewayEndpoint/prod',
+        api_gw_endpoint_ssm_param_name='/Spotificity/ApiGatewayEndpointUrl/prod',
     ),
 }
