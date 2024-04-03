@@ -183,7 +183,7 @@ class NotifierConstruct(Construct):
         _state_machine = StateMachine(
             self,
             'NotifierStateMachine',
-            state_machine_name='NotifierStateMachine',
+            state_machine_name=generate_name('NotifierStateMachine', account),
             definition=_fetch_access_token_task,  # The initial task to invoke
         )
 
