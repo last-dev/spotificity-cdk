@@ -4,6 +4,10 @@ from aws_cdk.aws_lambda import Function
 from aws_cdk.aws_ssm import StringParameter
 from constructs import Construct
 
+from ..constants import AwsAccount
+
+from ..helpers.helpers import generate_name, get_removal_policy
+
 
 class ApiGatewayConstruct(Construct):
     """
@@ -15,6 +19,7 @@ class ApiGatewayConstruct(Construct):
         self,
         scope: Construct,
         id: str,
+        account: AwsAccount,
         fetch_artists_lambda: Function,
         add_artists_lambda: Function,
         remove_artists_lambda: Function,
@@ -40,10 +45,11 @@ class ApiGatewayConstruct(Construct):
         self._api = RestApi(
             self,
             'ApiForClientInvokes',
-            rest_api_name='ApiForClientInvokes',
+            rest_api_name=generate_name('ApiForClientInvokes', account),
             description="API Gateway for Lambdas invoked from client.",
             policy=api_gateway_role.assume_role_policy,
         )
+        self._api.apply_removal_policy(get_removal_policy(account.stage))
 
         # Lambda Integrations
         fetch_artist_integration = LambdaIntegration(fetch_artists_lambda)  # type: ignore
@@ -89,8 +95,9 @@ class ApiGatewayConstruct(Construct):
         # Store the API Gateway URL in SSM for CLI users
         endpoint_url_param = StringParameter(
             self,
-            'ApiGwUrlParameter',
+            generate_name('ApiGwUrlParameter', account),
             description='API Gateway Endpoint Url',
-            parameter_name=f'/Spotificity/ApiGatewayEndpointUrl/beta',
+            parameter_name=f'/Spotificity/ApiGatewayEndpointUrl/{account.stage.value.lower()}',
             string_value=self._api.url,
         )
+        endpoint_url_param.apply_removal_policy(get_removal_policy(account.stage))

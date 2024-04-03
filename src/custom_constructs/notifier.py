@@ -10,6 +10,10 @@ from aws_cdk.aws_stepfunctions import Choice, Condition, StateMachine
 from aws_cdk.aws_stepfunctions_tasks import LambdaInvoke
 from constructs import Construct
 
+from ..constants import AwsAccount
+
+from ..helpers.helpers import generate_name
+
 
 class NotifierConstruct(Construct):
     """
@@ -22,6 +26,7 @@ class NotifierConstruct(Construct):
         self,
         scope: Construct,
         id: str,
+        account: AwsAccount,
         artist_table: TableV2,
         requests_layer: LayerVersion,
         access_token_lambda: Function,
@@ -30,7 +35,7 @@ class NotifierConstruct(Construct):
         super().__init__(scope, id, **kwargs)
 
         # All Lambdas throughout our StepFunction
-        get_artists_list_lambda_name = 'GetArtistsListFor-ForNotifier'
+        get_artists_list_lambda_name = generate_name('GetArtistsListFor-ForNotifier', account)
         _fetch_artists_list_lambda = Function(
             self,
             get_artists_list_lambda_name,
@@ -46,7 +51,7 @@ class NotifierConstruct(Construct):
 
         _topic = Topic(self, 'NotifierTopic', topic_name='SpotificityNotifierTopic')
 
-        email_if_no_artists_lambda_name = 'MessageIfNoArtistsLambda'
+        email_if_no_artists_lambda_name = generate_name('MessageIfNoArtistsLambda', account)
         _email_if_no_artists_lambda = Function(
             self,
             email_if_no_artists_lambda_name,
@@ -66,7 +71,7 @@ class NotifierConstruct(Construct):
             )
         )
 
-        fetch_music_lambda_name = 'GetLatestMusicLambda-ForNotifier'
+        fetch_music_lambda_name = generate_name('GetLatestMusicLambda-ForNotifier', account)
         _fetch_music_lambda = Function(
             self,
             fetch_music_lambda_name,
@@ -79,7 +84,9 @@ class NotifierConstruct(Construct):
             layers=[requests_layer],
         )
 
-        update_table_music_lambda_name = 'UpdateTableMusicLambda-ForNotifier'
+        update_table_music_lambda_name = generate_name(
+            'UpdateTableMusicLambda-ForNotifier', account
+        )
         _update_table_music_lambda = Function(
             self,
             update_table_music_lambda_name,
@@ -93,7 +100,7 @@ class NotifierConstruct(Construct):
         )
         artist_table.grant_write_data(_update_table_music_lambda)
 
-        email_new_music_lambda_name = 'MessageNewMusicLambda'
+        email_new_music_lambda_name = generate_name('MessageNewMusicLambda', account)
         _email_new_music_lambda = Function(
             self,
             email_new_music_lambda_name,
@@ -176,15 +183,15 @@ class NotifierConstruct(Construct):
         _state_machine = StateMachine(
             self,
             'NotifierStateMachine',
-            state_machine_name='NotifierStateMachine',
+            state_machine_name=generate_name('NotifierStateMachine', account),
             definition=_fetch_access_token_task,  # The initial task to invoke
         )
 
         # EventBridge rule to trigger Lambda StepFunction routine every Sunday at 8AM EST
         Rule(
             self,
-            'Rule',
-            rule_name='WeeklyMusicFetchNotificationRule',
+            'NotificationRule',
+            rule_name=generate_name('WeeklyMusicFetchNotificationRule', account),
             schedule=Schedule.cron(minute='0', hour='12', week_day='SUN'),
             description='Triggers Lambda every week to fetch the latest musical releases from my list of artists.',
             targets=[SfnStateMachine(_state_machine)],  # type: ignore
@@ -194,7 +201,5 @@ class NotifierConstruct(Construct):
         __my_email = Secret.from_secret_name_v2(
             self, 'ImportedEmailAddress', secret_name='EmailSecret'
         )
-
-        # Give 'MessageIfNoArtistsHandler' and 'MessageNewMusicHandler' permissions to read my email secrets
         __my_email.grant_read(_email_if_no_artists_lambda)
         __my_email.grant_read(_email_new_music_lambda)
