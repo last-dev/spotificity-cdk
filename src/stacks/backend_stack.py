@@ -11,9 +11,9 @@ from ..custom_constructs.table_operators import CoreTableOperatorsConstruct
 
 class BackendStack(Stack):
     def __init__(
-        self, scope: Construct, construct_id: str, monitored_artist_table: TableV2, **kwargs
+        self, scope: Construct, id: str, monitored_artist_table: TableV2, **kwargs
     ) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+        super().__init__(scope, id, **kwargs)
 
         # Lambda layer that bundles `requests` module
         requests_layer = LayerVersion(

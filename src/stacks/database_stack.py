@@ -10,8 +10,8 @@ class DatabaseStack(Stack):
         """Returns the DynamoDB table name that holds the monitored artists."""
         return self.table
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
 
         artist_table_name = 'MonitoredArtistsTable'
         self.table = TableV2(
