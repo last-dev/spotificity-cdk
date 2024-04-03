@@ -10,9 +10,7 @@ from ..custom_constructs.table_operators import CoreTableOperatorsConstruct
 
 
 class BackendStack(Stack):
-    def __init__(
-        self, scope: Construct, id: str, monitored_artist_table: TableV2, **kwargs
-    ) -> None:
+    def __init__(self, scope: Construct, id: str, artist_table: TableV2, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # Lambda layer that bundles `requests` module
@@ -28,15 +26,15 @@ class BackendStack(Stack):
         # Custom construct with setter, getter, and deleter Lambda functions
         # for manipulating DynamoDB table
         table_operators = CoreTableOperatorsConstruct(
-            self, 'TableManipulatorsConstruct', artist_table=monitored_artist_table
+            self, 'TableManipulatorsConstruct', artist_table=artist_table
         )
 
         # Custom construct for the resources that will interact with the Spotify API
         spotify_operators = CoreSpotifyOperatorsConstruct(
             self,
             'SpotifyOperatorsConstruct',
-            artist_table_arn=monitored_artist_table.table_arn,
-            artist_table_stream_arn=monitored_artist_table.table_stream_arn,
+            artist_table_arn=artist_table.table_arn,
+            artist_table_stream_arn=artist_table.table_stream_arn,
             update_table_music_lambda=table_operators.update_table_with_music_lambda,
             requests_layer=requests_layer,
         )
@@ -45,7 +43,7 @@ class BackendStack(Stack):
         NotifierConstruct(
             self,
             'NotifierConstruct',
-            artist_table=monitored_artist_table,
+            artist_table=artist_table,
             requests_layer=requests_layer,
             access_token_lambda=spotify_operators.get_access_token_lambda,
         )
