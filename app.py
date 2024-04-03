@@ -10,7 +10,7 @@ from src.stacks.backend_stack import BackendStack
 from src.stacks.database_stack import DatabaseStack
 
 # Explicitly pull env info so account ID is set now, as oppose to being
-# determined at deployment w/ CloudFormation's intrinsic {"Ref":"AWS::AccountId"})
+# determined at deployment w/ CloudFormation's intrinsic {"Ref":"AWS::AccountId"}
 env = Environment(account=environ['CDK_DEFAULT_ACCOUNT'], region=environ['CDK_DEFAULT_REGION'])
 app = App()
 
