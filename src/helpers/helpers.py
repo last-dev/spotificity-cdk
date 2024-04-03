@@ -8,7 +8,7 @@ def get_removal_policy(stage: Stage) -> RemovalPolicy:
     Determines the appropriate removal policy for resource based on
     the deployment stage.
     """
-    if stage == Stage.Prod:
+    if stage.value == Stage.Prod:
         return RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     return RemovalPolicy.DESTROY
 
