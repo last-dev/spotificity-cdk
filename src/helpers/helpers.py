@@ -1,6 +1,6 @@
 from aws_cdk import RemovalPolicy
 
-from src.constants import Account, Stage
+from src.constants import AwsAccount, Stage
 
 
 def get_removal_policy(stage: Stage) -> RemovalPolicy:
@@ -13,7 +13,7 @@ def get_removal_policy(stage: Stage) -> RemovalPolicy:
     return RemovalPolicy.DESTROY
 
 
-def generate_name(name: str, account: Account) -> str:
+def generate_name(name: str, account: AwsAccount) -> str:
     """
     Generates a name for a resource based on the deployment stage and
     account.
