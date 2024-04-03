@@ -97,7 +97,7 @@ class ApiGatewayConstruct(Construct):
             self,
             generate_name('ApiGwUrlParameter', account),
             description='API Gateway Endpoint Url',
-            parameter_name=f'/Spotificity/ApiGatewayEndpointUrl/beta',
+            parameter_name=f'/Spotificity/ApiGatewayEndpointUrl/{account.stage.value.lower()}',
             string_value=self._api.url,
         )
         endpoint_url_param.apply_removal_policy(get_removal_policy(account.stage))
