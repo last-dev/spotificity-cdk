@@ -2,6 +2,10 @@ from aws_cdk.aws_dynamodb import TableV2
 from aws_cdk.aws_lambda import Code, Function, Runtime
 from constructs import Construct
 
+from ..constants import AwsAccount
+
+from ..helpers.helpers import generate_name
+
 
 class CoreTableOperatorsConstruct(Construct):
     """
@@ -26,10 +30,12 @@ class CoreTableOperatorsConstruct(Construct):
     def update_table_with_music_lambda(self) -> Function:
         return self.update_table_with_music_lambda_
 
-    def __init__(self, scope: Construct, id: str, artist_table: TableV2, **kwargs) -> None:
+    def __init__(
+        self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, **kwargs
+    ) -> None:
         super().__init__(scope, id, **kwargs)
 
-        fetch_artist_lambda_name = 'FetchArtistLambda'
+        fetch_artist_lambda_name = generate_name('FetchArtistLambda', account)
         self.fetch_artists_lambda_ = Function(
             self,
             fetch_artist_lambda_name,
@@ -42,7 +48,7 @@ class CoreTableOperatorsConstruct(Construct):
         )
         artist_table.grant_read_data(self.fetch_artists_lambda_)
 
-        add_artist_lambda_name = 'AddArtistLambda'
+        add_artist_lambda_name = generate_name('AddArtistLambda', account)
         self.add_artist_lambda_ = Function(
             self,
             add_artist_lambda_name,
@@ -55,7 +61,7 @@ class CoreTableOperatorsConstruct(Construct):
         )
         artist_table.grant_write_data(self.add_artist_lambda_)
 
-        remove_artist_lambda_name = 'RemoveArtistLambda'
+        remove_artist_lambda_name = generate_name('RemoveArtistLambda', account)
         self.remove_artist_lambda_ = Function(
             self,
             remove_artist_lambda_name,
@@ -68,7 +74,7 @@ class CoreTableOperatorsConstruct(Construct):
         )
         artist_table.grant_write_data(self.remove_artist_lambda_)
 
-        update_table_with_music_lambda_name = 'UpdateTableWithMusicLambda'
+        update_table_with_music_lambda_name = generate_name('UpdateTableWithMusicLambda', account)
         self.update_table_with_music_lambda_ = Function(
             self,
             update_table_with_music_lambda_name,

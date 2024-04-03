@@ -4,6 +4,10 @@ from aws_cdk.aws_lambda_event_sources import DynamoEventSource
 from aws_cdk.aws_secretsmanager import Secret
 from constructs import Construct
 
+from ..constants import AwsAccount
+
+from ..helpers.helpers import generate_name, get_removal_policy
+
 
 class CoreSpotifyOperatorsConstruct(Construct):
     """
@@ -23,6 +27,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
         self,
         scope: Construct,
         id: str,
+        account: AwsAccount,
         artist_table_arn: str,
         artist_table_stream_arn: str | None,
         update_table_music_lambda: Function,
@@ -31,7 +36,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
     ) -> None:
         super().__init__(scope, id, **kwargs)
 
-        get_access_token_lambda_name = 'GetAccessTokenLambda'
+        get_access_token_lambda_name = generate_name('GetAccessTokenLambda', account)
         self.get_access_token_lambda = Function(
             self,
             get_access_token_lambda_name,
@@ -43,7 +48,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
             layers=[requests_layer],
         )
 
-        get_artist_id_lambda_name = 'GetArtist-IDLambda'
+        get_artist_id_lambda_name = generate_name('GetArtist-IDLambda', account)
         self.get_artist_id_lambda = Function(
             self,
             get_artist_id_lambda_name,
@@ -61,7 +66,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
         )
         __spotify_secrets.grant_read(self.get_access_token_lambda)
 
-        get_latest_music_lambda_name = 'GetLatestMusicLambda'
+        get_latest_music_lambda_name = generate_name('GetLatestMusicLambda', account)
         _get_latest_music_lambda = Function(
             self,
             get_latest_music_lambda_name,
@@ -77,13 +82,11 @@ class CoreSpotifyOperatorsConstruct(Construct):
             },
         )
         self.get_access_token_lambda.grant_invoke(_get_latest_music_lambda)
-
-        # Add DynamoDB Stream as an event source to trigger 'GetLatestMusicLambda'
         _get_latest_music_lambda.add_event_source(
             DynamoEventSource(
                 table=Table.from_table_attributes(
                     self,
-                    'MonitoredArtistTable',
+                    f'MonitoredArtistTable-{account.stage.value.lower()}',
                     table_arn=artist_table_arn,
                     table_stream_arn=artist_table_stream_arn,
                 ),
