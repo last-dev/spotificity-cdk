@@ -8,15 +8,11 @@ class Stage(Enum):
     Beta = 'Beta'
 
 
-class AwsRegion(Enum):
-    IAD = 'us-east-1'
-
-
 @dataclass(frozen=True)
 class AwsAccount:
     account_id: str
     stage: Stage
-    region: AwsRegion
+    region: str
 
 
 # Define my development accounts for each stage
@@ -25,10 +21,10 @@ class Accounts:
     beta: AwsAccount = AwsAccount(
         account_id=os.environ['SPOTIFICITY_BETA_ACCT'],
         stage=Stage.Beta,
-        region=AwsRegion.IAD,
+        region='us-east-1',
     )
     prod: AwsAccount = AwsAccount(
         account_id=os.environ['SPOTIFICITY_PROD_ACCT'],
         stage=Stage.Prod,
-        region=AwsRegion.IAD,
+        region='us-east-1',
     )
