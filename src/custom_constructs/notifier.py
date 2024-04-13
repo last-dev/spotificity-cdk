@@ -11,7 +11,6 @@ from aws_cdk.aws_stepfunctions_tasks import LambdaInvoke
 from constructs import Construct
 
 from ..constants import AwsAccount
-
 from ..helpers.helpers import generate_name
 
 
@@ -186,14 +185,15 @@ class NotifierConstruct(Construct):
         )
 
         # EventBridge rule to trigger Lambda StepFunction routine every Sunday at 8AM EST
-        Rule(
-            self,
-            'NotificationRule',
-            rule_name=generate_name('WeeklyMusicFetchNotificationRule', account),
-            schedule=Schedule.cron(minute='0', hour='12', week_day='SUN'),
-            description='Triggers Lambda every week to fetch the latest musical releases from my list of artists.',
-            targets=[SfnStateMachine(_state_machine)],  # type: ignore
-        )
+        if account.stage.value == 'Prod':
+            Rule(
+                self,
+                'NotificationRule',
+                rule_name=generate_name('WeeklyMusicFetchNotificationRule', account),
+                schedule=Schedule.cron(minute='0', hour='12', week_day='SUN'),
+                description='Triggers Lambda every week to fetch the latest musical releases from my list of artists.',
+                targets=[SfnStateMachine(_state_machine)],  # type: ignore
+            )
 
         # Import my email address to grant some Lambdas permission to pull secrets
         __my_email = Secret.from_secret_name_v2(self, 'ImportedEmailAddress', secret_name='EmailSecret')
