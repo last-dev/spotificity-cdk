@@ -1,3 +1,4 @@
+from aws_cdk import Duration
 from aws_cdk.aws_dynamodb import Table
 from aws_cdk.aws_lambda import Code, Function, LayerVersion, Runtime, StartingPosition
 from aws_cdk.aws_lambda_event_sources import DynamoEventSource
@@ -46,6 +47,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
             function_name=get_access_token_lambda_name,
             description=f'Calls Spotify\'s API to get an access token.',
             layers=[requests_layer],
+            timeout=Duration.seconds(5),
         )
 
         get_artist_id_lambda_name = generate_name('GetArtist-IDLambda', account)
@@ -58,12 +60,11 @@ class CoreSpotifyOperatorsConstruct(Construct):
             function_name=get_artist_id_lambda_name,
             description=f'Queries the Spotify\'s API for the artist\'s ID.',
             layers=[requests_layer],
+            timeout=Duration.seconds(5),
         )
 
         # Grant read permissions to my Spotify client secrets
-        __spotify_secrets = Secret.from_secret_name_v2(
-            self, 'ImportedSpotifySecrets', secret_name='SpotifySecrets'
-        )
+        __spotify_secrets = Secret.from_secret_name_v2(self, 'ImportedSpotifySecrets', secret_name='SpotifySecrets')
         __spotify_secrets.grant_read(self.get_access_token_lambda)
 
         get_latest_music_lambda_name = generate_name('GetLatestMusicLambda', account)
@@ -80,6 +81,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 'GET_ACCESS_TOKEN_LAMBDA': self.get_access_token_lambda.function_name,
                 'UPDATE_TABLE_MUSIC_LAMBDA': update_table_music_lambda.function_name,
             },
+            timeout=Duration.seconds(10),
         )
         self.get_access_token_lambda.grant_invoke(_get_latest_music_lambda)
         _get_latest_music_lambda.add_event_source(

@@ -1,3 +1,4 @@
+from aws_cdk import Duration
 from aws_cdk.aws_dynamodb import TableV2
 from aws_cdk.aws_lambda import Code, Function, Runtime
 from constructs import Construct
@@ -30,9 +31,7 @@ class CoreTableOperatorsConstruct(Construct):
     def update_table_with_music_lambda(self) -> Function:
         return self.update_table_with_music_lambda_
 
-    def __init__(
-        self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, **kwargs
-    ) -> None:
+    def __init__(self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         fetch_artist_lambda_name = generate_name('FetchArtistLambda', account)
@@ -45,6 +44,7 @@ class CoreTableOperatorsConstruct(Construct):
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
             function_name=fetch_artist_lambda_name,
             description=f'Returns a list of all current artists being monitored in DynamoDB table: {artist_table.table_name}.',
+            timeout=Duration.seconds(20),
         )
         artist_table.grant_read_data(self.fetch_artists_lambda_)
 
@@ -58,6 +58,7 @@ class CoreTableOperatorsConstruct(Construct):
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
             function_name=add_artist_lambda_name,
             description=f'Adds a new artist to the DynamoDB table: {artist_table.table_name}.',
+            timeout=Duration.seconds(20),
         )
         artist_table.grant_write_data(self.add_artist_lambda_)
 
@@ -71,6 +72,7 @@ class CoreTableOperatorsConstruct(Construct):
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
             function_name=remove_artist_lambda_name,
             description=f'Removes an artist from the DynamoDB table: {artist_table.table_name}.',
+            timeout=Duration.seconds(20),
         )
         artist_table.grant_write_data(self.remove_artist_lambda_)
 
@@ -84,5 +86,6 @@ class CoreTableOperatorsConstruct(Construct):
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
             function_name=update_table_with_music_lambda_name,
             description=f'Once the latest musical release is pulled, this updates {artist_table.table_name}\'s artist attributes.',
+            timeout=Duration.seconds(20),
         )
         artist_table.grant_write_data(self.update_table_with_music_lambda_)

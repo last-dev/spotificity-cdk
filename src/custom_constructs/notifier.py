@@ -46,6 +46,7 @@ class NotifierConstruct(Construct):
             handler='get_artist_list_for_notifier.handler',
             layers=[requests_layer],
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
+            timeout=Duration.seconds(10),
         )
         artist_table.grant_read_data(_fetch_artists_list_lambda)
 
@@ -58,7 +59,7 @@ class NotifierConstruct(Construct):
             description='Publishes a message to a SNS topic if there are currently no artists in the table',
             function_name=email_if_no_artists_lambda_name,
             runtime=Runtime.PYTHON_3_12,
-            timeout=Duration.seconds(30),
+            timeout=Duration.seconds(5),
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='message_if_no_artists.handler',
             environment={'SNS_TOPIC_ARN': _topic.topic_arn},
@@ -84,9 +85,7 @@ class NotifierConstruct(Construct):
             layers=[requests_layer],
         )
 
-        update_table_music_lambda_name = generate_name(
-            'UpdateTableMusicLambda-ForNotifier', account
-        )
+        update_table_music_lambda_name = generate_name('UpdateTableMusicLambda-ForNotifier', account)
         _update_table_music_lambda = Function(
             self,
             update_table_music_lambda_name,
@@ -110,6 +109,7 @@ class NotifierConstruct(Construct):
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='message_new_music.handler',
             environment={'SNS_TOPIC_ARN': _topic.topic_arn},
+            timeout=Duration.seconds(5),
         )
         _email_new_music_lambda.add_to_role_policy(
             PolicyStatement(
@@ -155,9 +155,7 @@ class NotifierConstruct(Construct):
         )
 
         # Add conditions to the choice state
-        _choice_state.when(
-            Condition.number_equals('$.status_code', 204), _if_no_artists_publish_task
-        )
+        _choice_state.when(Condition.number_equals('$.status_code', 204), _if_no_artists_publish_task)
         _choice_state.otherwise(_fetch_latest_music_task)
 
         # Continue listing the rest of the tasks in our Step Function workflow
@@ -198,8 +196,6 @@ class NotifierConstruct(Construct):
         )
 
         # Import my email address to grant some Lambdas permission to pull secrets
-        __my_email = Secret.from_secret_name_v2(
-            self, 'ImportedEmailAddress', secret_name='EmailSecret'
-        )
+        __my_email = Secret.from_secret_name_v2(self, 'ImportedEmailAddress', secret_name='EmailSecret')
         __my_email.grant_read(_email_if_no_artists_lambda)
         __my_email.grant_read(_email_new_music_lambda)
