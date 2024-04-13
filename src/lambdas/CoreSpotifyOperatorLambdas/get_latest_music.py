@@ -51,9 +51,7 @@ def handler(event: dict, context) -> dict:
             try:
                 lambda_name = os.getenv('UPDATE_TABLE_MUSIC_LAMBDA')
                 lambda_ = boto3.client('lambda')
-                log.debug(
-                    f'Invoking Lambda that will update the DynamoDB table... (Lambda Name: {lambda_name})'
-                )
+                log.debug(f'Invoking Lambda that will update the DynamoDB table... (Lambda Name: {lambda_name})')
 
                 response: dict = lambda_.invoke(
                     FunctionName=lambda_name,
@@ -91,9 +89,7 @@ def request_token() -> str:
     lambda_name = os.getenv('GET_ACCESS_TOKEN_LAMBDA')
 
     try:
-        log.debug(
-            f'Invoking Lambda that will request an access token from Spotify... (Lambda Name: {lambda_name})'
-        )
+        log.debug(f'Invoking Lambda that will request an access token from Spotify... (Lambda Name: {lambda_name})')
 
         lambda_ = boto3.client('lambda')
         response: dict = lambda_.invoke(FunctionName=lambda_name, InvocationType='RequestResponse')

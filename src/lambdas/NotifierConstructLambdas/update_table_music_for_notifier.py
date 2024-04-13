@@ -29,30 +29,22 @@ def handler(event, context) -> dict:
         try:
             ddb = boto3.client('dynamodb')
             table = os.getenv('ARTIST_TABLE_NAME')
-            log.info(
-                f'Initiating PUT request to update {table} with {artist_name}\'s latest releases...'
-            )
+            log.info(f'Initiating PUT request to update {table} with {artist_name}\'s latest releases...')
 
             # Convert the last_album_details and last_single_details to DynamoDB format
             converted_last_album_details: dict = {
                 'M': {
                     'last_album_name': {'S': last_album_details['last_album_name']},
                     'last_album_release_date': {'S': last_album_details['last_album_release_date']},
-                    'last_album_artists': {
-                        'L': [{'S': artist} for artist in last_album_details['last_album_artists']]
-                    },
+                    'last_album_artists': {'L': [{'S': artist} for artist in last_album_details['last_album_artists']]},
                 }
             }
             converted_last_single_details: dict = {
                 'M': {
                     'last_single_name': {'S': last_single_details['last_single_name']},
-                    'last_single_release_date': {
-                        'S': last_single_details['last_single_release_date']
-                    },
+                    'last_single_release_date': {'S': last_single_details['last_single_release_date']},
                     'last_single_artists': {
-                        'L': [
-                            {'S': artist} for artist in last_single_details['last_single_artists']
-                        ]
+                        'L': [{'S': artist} for artist in last_single_details['last_single_artists']]
                     },
                 }
             }
@@ -74,9 +66,7 @@ def handler(event, context) -> dict:
             raise
         else:
             log.debug(f'Returned response: {response}')
-            log.info(
-                f'PUT request successful. {artist_name}\'s latest releases have been updated in {table}.'
-            )
+            log.info(f'PUT request successful. {artist_name}\'s latest releases have been updated in {table}.')
 
             # Check if there are any changes in the music. If so, add artist to list of artists with changes.
             log.info('Checking if there are any changes in the music...')
@@ -84,9 +74,7 @@ def handler(event, context) -> dict:
                 response['Attributes']['last_album_details']['M']['last_album_name']['S']
                 != converted_last_album_details['M']['last_album_name']['S']
             ):
-                log.debug(
-                    f'{artist_name} dropped a new album! Adding {artist_name} to list of artists with changes...'
-                )
+                log.debug(f'{artist_name} dropped a new album! Adding {artist_name} to list of artists with changes...')
                 artists_with_changes.append(
                     {
                         'artist_name': artist_name,
@@ -100,9 +88,7 @@ def handler(event, context) -> dict:
                 log.debug(
                     f'{artist_name} dropped a new single! Adding {artist_name} to list of artists with changes...'
                 )
-                artists_with_changes.append(
-                    {'artist_name': artist_name, 'last_single_details': last_single_details}
-                )
+                artists_with_changes.append({'artist_name': artist_name, 'last_single_details': last_single_details})
             else:
                 log.debug(f'No changes in {artist_name}\'s music.')
 

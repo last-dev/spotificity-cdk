@@ -80,16 +80,12 @@ def request_token(client_id: str, client_secret: str) -> str:
         log.error(f'HTTP Error occurred: {err}')
         raise
     else:
-        log.info(
-            f'Successfully received response from Spotify Token API. HTTP Status code: {response.status_code}'
-        )
+        log.info(f'Successfully received response from Spotify Token API. HTTP Status code: {response.status_code}')
         log.debug(f'Returned Payload: {response.json()}')
 
         # Check if error occurred while attempting to retrieve access token. If not, return token
         if response.json().get('error'):
-            log.error(
-                f'Unsuccessful response from Spotify Token API. Error: {response.json()["error"]}'
-            )
+            log.error(f'Unsuccessful response from Spotify Token API. Error: {response.json()["error"]}')
             raise Exception(f'Error: {response.json()["error"]}')
         else:
             log.debug("Exiting request_token function...")

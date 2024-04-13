@@ -38,19 +38,13 @@ def handler(event: dict, context) -> dict:
             'body': json.dumps({'error': err.response.text, 'error_type': 'HTTP'}),
         }
     else:
-        log.info(
-            f'Successfully received response from Spotify `Search` API. HTTP Status code: {response.status_code}'
-        )
+        log.info(f'Successfully received response from Spotify `Search` API. HTTP Status code: {response.status_code}')
         log.debug(f'Returned Payload: {response.json()}')
         artist_search_results: dict = response.json()
 
-        log.info(
-            'Successfully retrieved list of artists with their respective Spotify IDs. Returning list to client.'
-        )
+        log.info('Successfully retrieved list of artists with their respective Spotify IDs. Returning list to client.')
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json'},
-            'body': json.dumps(
-                {'artistSearchResultsList': artist_search_results['artists']['items']}
-            ),
+            'body': json.dumps({'artistSearchResultsList': artist_search_results['artists']['items']}),
         }

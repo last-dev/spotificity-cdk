@@ -25,15 +25,11 @@ def handler(event: dict, context) -> dict:
         table = os.getenv('ARTIST_TABLE_NAME')
         log.info(f'Attempting to remove {artist_name} from {table}...')
 
-        response = ddb.delete_item(
-            TableName=table, Key={'artist_id': {'S': artist_id}}, ReturnConsumedCapacity='TOTAL'
-        )
+        response = ddb.delete_item(TableName=table, Key={'artist_id': {'S': artist_id}}, ReturnConsumedCapacity='TOTAL')
     except ClientError as err:
         log.error(f'Client Error Message: {err.response["Error"]["Message"]}')
         log.error(f'Client Error Code: {err.response["Error"]["Code"]}')
-        log.warning(
-            'Error occurred while trying to remove artist. Returning error message to client.'
-        )
+        log.warning('Error occurred while trying to remove artist. Returning error message to client.')
         return {
             'statusCode': err.response['ResponseMetadata']['HTTPStatusCode'],
             'headers': {'Content-Type': 'application/json'},
@@ -41,9 +37,7 @@ def handler(event: dict, context) -> dict:
         }
     else:
         log.debug(f'Returned payload: {response}')
-        log.info(
-            f'DELETE request successful. {artist_name} successfully removed. Returning payload to client.'
-        )
+        log.info(f'DELETE request successful. {artist_name} successfully removed. Returning payload to client.')
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json'},

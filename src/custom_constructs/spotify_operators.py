@@ -6,7 +6,6 @@ from aws_cdk.aws_secretsmanager import Secret
 from constructs import Construct
 
 from ..constants import AwsAccount
-
 from ..helpers.helpers import generate_name, get_removal_policy
 
 

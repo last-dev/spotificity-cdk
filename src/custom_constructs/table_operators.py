@@ -4,7 +4,6 @@ from aws_cdk.aws_lambda import Code, Function, Runtime
 from constructs import Construct
 
 from ..constants import AwsAccount
-
 from ..helpers.helpers import generate_name
 
 

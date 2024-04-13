@@ -41,9 +41,7 @@ def handler(event: dict, context) -> dict:
         }
     else:
         log.debug(f'Returned payload: {response}')
-        log.info(
-            f'PUT request successful. Now monitoring {artist_name}. Returning payload to client.'
-        )
+        log.info(f'PUT request successful. Now monitoring {artist_name}. Returning payload to client.')
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json'},

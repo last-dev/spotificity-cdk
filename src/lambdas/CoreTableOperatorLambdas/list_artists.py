@@ -19,9 +19,7 @@ def handler(event: dict, context) -> dict:
         table = os.getenv('ARTIST_TABLE_NAME')
         log.info(f'Sending scan request to {table}...')
 
-        response = ddb.scan(
-            TableName=table, Select='ALL_ATTRIBUTES', ReturnConsumedCapacity='TOTAL'
-        )
+        response = ddb.scan(TableName=table, Select='ALL_ATTRIBUTES', ReturnConsumedCapacity='TOTAL')
     except ClientError as err:
         log.error(f'Client Error Message: {err.response["Error"]["Message"]}')
         log.error(f'Client Error Code: {err.response["Error"]["Code"]}')
@@ -51,9 +49,7 @@ def handler(event: dict, context) -> dict:
             ]
 
             # Extract out only artist name. Then add all artists into a list
-            current_artists_names: list[str] = [
-                artist['artist_name']['S'] for artist in response['Items']
-            ]
+            current_artists_names: list[str] = [artist['artist_name']['S'] for artist in response['Items']]
 
             return {
                 'statusCode': 200,

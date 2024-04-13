@@ -20,9 +20,7 @@ for field in fields(Accounts):
     if env.account == account.account_id:
         account_props = account
 
-        database_stack = DatabaseStack(
-            app, generate_name('DatabaseStack', account_props), account=account_props
-        )
+        database_stack = DatabaseStack(app, generate_name('DatabaseStack', account_props), account=account_props)
         backend_stack = BackendStack(
             app,
             generate_name('BackendStack', account_props),

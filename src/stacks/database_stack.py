@@ -2,9 +2,8 @@ from aws_cdk import RemovalPolicy, Stack
 from aws_cdk.aws_dynamodb import AttributeType, StreamViewType, TableEncryptionV2, TableV2
 from constructs import Construct
 
-from ..helpers.helpers import generate_name, get_removal_policy
-
 from ..constants import AwsAccount
+from ..helpers.helpers import generate_name, get_removal_policy
 
 
 class DatabaseStack(Stack):

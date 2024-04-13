@@ -23,9 +23,7 @@ def handler(event: dict, context) -> dict:
     try:
         ddb = boto3.client('dynamodb')
         table = os.getenv('ARTIST_TABLE_NAME')
-        log.info(
-            f'Initiating PUT request to update {table} with {artist_name}\'s latest releases...'
-        )
+        log.info(f'Initiating PUT request to update {table} with {artist_name}\'s latest releases...')
 
         response = ddb.update_item(
             TableName=table,
@@ -35,27 +33,18 @@ def handler(event: dict, context) -> dict:
                 ':last_album_details': {
                     'M': {
                         'last_album_name': {'S': last_album_details['last_album_name']},
-                        'last_album_release_date': {
-                            'S': last_album_details['last_album_release_date']
-                        },
+                        'last_album_release_date': {'S': last_album_details['last_album_release_date']},
                         'last_album_artists': {
-                            'L': [
-                                {'S': artist} for artist in last_album_details['last_album_artists']
-                            ]
+                            'L': [{'S': artist} for artist in last_album_details['last_album_artists']]
                         },
                     }
                 },
                 ':last_single_details': {
                     'M': {
                         'last_single_name': {'S': last_single_details['last_single_name']},
-                        'last_single_release_date': {
-                            'S': last_single_details['last_single_release_date']
-                        },
+                        'last_single_release_date': {'S': last_single_details['last_single_release_date']},
                         'last_single_artists': {
-                            'L': [
-                                {'S': artist}
-                                for artist in last_single_details['last_single_artists']
-                            ]
+                            'L': [{'S': artist} for artist in last_single_details['last_single_artists']]
                         },
                     }
                 },
@@ -69,8 +58,6 @@ def handler(event: dict, context) -> dict:
         raise
     else:
         log.debug(f'Returned payload: {response}')
-        log.info(
-            f'PUT request successful. {artist_name}\'s latest releases have been updated in {table}.'
-        )
+        log.info(f'PUT request successful. {artist_name}\'s latest releases have been updated in {table}.')
 
         return {'statusCode': 200, 'payload': {'returnPayloadFromUpdate': response}}

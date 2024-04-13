@@ -5,7 +5,6 @@ from aws_cdk.aws_ssm import StringParameter
 from constructs import Construct
 
 from ..constants import AwsAccount
-
 from ..helpers.helpers import generate_name, get_removal_policy
 
 
@@ -64,33 +63,23 @@ class ApiGatewayConstruct(Construct):
         """
         # GET /token
         token_resource = self._api.root.add_resource('token')
-        token_resource.add_method(
-            'GET', access_token_integration, authorization_type=AuthorizationType.IAM
-        )
+        token_resource.add_method('GET', access_token_integration, authorization_type=AuthorizationType.IAM)
 
         # GET /artist
         artist_resource = self._api.root.add_resource('artist')
-        artist_resource.add_method(
-            'GET', fetch_artist_integration, authorization_type=AuthorizationType.IAM
-        )
+        artist_resource.add_method('GET', fetch_artist_integration, authorization_type=AuthorizationType.IAM)
 
         # POST/artist/id
         get_artist_id_resource = artist_resource.add_resource('id')
-        get_artist_id_resource.add_method(
-            'POST', get_artist_id_integration, authorization_type=AuthorizationType.IAM
-        )
+        get_artist_id_resource.add_method('POST', get_artist_id_integration, authorization_type=AuthorizationType.IAM)
 
         # POST /artist
         add_artist_resource = artist_resource
-        add_artist_resource.add_method(
-            'POST', add_artist_integration, authorization_type=AuthorizationType.IAM
-        )
+        add_artist_resource.add_method('POST', add_artist_integration, authorization_type=AuthorizationType.IAM)
 
         # DELETE /artist
         remove_artist_resource = artist_resource
-        remove_artist_resource.add_method(
-            'DELETE', remove_artist_integration, authorization_type=AuthorizationType.IAM
-        )
+        remove_artist_resource.add_method('DELETE', remove_artist_integration, authorization_type=AuthorizationType.IAM)
 
         # Store the API Gateway URL in SSM for CLI users
         endpoint_url_param = StringParameter(
