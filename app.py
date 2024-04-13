@@ -17,9 +17,9 @@ app = App()
 for field in fields(Accounts):
     stage = field.name
     account: AwsAccount = getattr(Accounts, stage)
+    
     if env.account == account.account_id:
         account_props = account
-
         database_stack = DatabaseStack(app, generate_name('DatabaseStack', account_props), account=account_props)
         backend_stack = BackendStack(
             app,
@@ -27,6 +27,5 @@ for field in fields(Accounts):
             account=account_props,
             artist_table=database_stack.artist_table,
         )
-        backend_stack.add_dependency(database_stack)
 
 app.synth()
