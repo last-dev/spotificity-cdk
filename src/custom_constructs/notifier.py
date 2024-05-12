@@ -78,7 +78,7 @@ class NotifierConstruct(Construct):
             description='Fetches the latest music released by any of the artists being monitored',
             function_name=fetch_music_lambda_name,
             runtime=Runtime.PYTHON_3_12,
-            timeout=Duration.seconds(45),
+            timeout=Duration.minutes(3),
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='get_latest_music_for_notifier.handler',
             layers=[requests_layer],
