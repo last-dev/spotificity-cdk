@@ -81,26 +81,26 @@ def send_email_with_new_music(event: list) -> None:
     log.debug(f'Formatted artist names into a string: {artists_str}')
 
     # Format new music into a string
-    email_list_of_strings: list[str] = []
+    email_strings_list: list[str] = []
     for index, artist in enumerate(event, start=1):
         artist_name = artist['artist_name']
-        last_album_name = artist['last_album_details']['last_album_name']
-        last_single_name = artist['last_single_details']['last_single_name']
-        last_album_release_date = artist['last_album_details']['last_album_release_date']
-        last_single_release_date = artist['last_single_details']['last_single_release_date']
 
         if artist.get('last_album_details'):
-            email_list_of_strings.append(
+            last_album_name = artist['last_album_details']['last_album_name']
+            last_album_release_date = artist['last_album_details']['last_album_release_date']
+            email_strings_list.append(
                 f'{index}. \n\t{artist_name} dropped "{last_album_name}" on {last_album_release_date}.'
             )
         elif artist.get('last_single_details'):
-            email_list_of_strings.append(
+            last_single_name = artist['last_single_details']['last_single_name']
+            last_single_release_date = artist['last_single_details']['last_single_release_date']
+            email_strings_list.append(
                 f'{index}. \n\t{artist_name} dropped "{last_single_name}" on {last_single_release_date}.'
             )
-    log.debug(f'Formatted new music into a string: {email_list_of_strings}')
+    log.debug(f'Formatted new music into a string: {email_strings_list}')
 
     # Join all strings together to create one long string for the email
-    new_music_str = '\n'.join(email_list_of_strings)
+    new_music_str = '\n'.join(email_strings_list)
 
     try:
         log.debug('Attempting to publish email to SNS topic...')
