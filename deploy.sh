@@ -75,6 +75,6 @@ echo "\n${prefix} ${GREEN}Running bootstrap...${RESET}\n"
 cdk bootstrap --profile $aws_profile --account $CDK_DEFAULT_ACCOUNT --region $CDK_DEFAULT_REGION
 
 echo "\n${prefix} ${GREEN}Deploying all stacks into AWS account ${CDK_DEFAULT_ACCOUNT}...${RESET}\n"
-cdk deploy --all --profile $aws_profile --account $CDK_DEFAULT_ACCOUNT --region $CDK_DEFAULT_REGION
+cdk deploy --all --profile $aws_profile --account $CDK_DEFAULT_ACCOUNT --region $CDK_DEFAULT_REGION --require-approval never
 
 echo "\n${GREEN}Deployment completed successfully! Here is a slice of cake: 🍰${RESET}\n"
