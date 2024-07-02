@@ -1,12 +1,16 @@
+
 from aws_cdk import Duration
 from aws_cdk.aws_dynamodb import Table
+from aws_cdk.aws_ec2 import SubnetSelection, SubnetType
 from aws_cdk.aws_lambda import Code, Function, LayerVersion, Runtime, StartingPosition
 from aws_cdk.aws_lambda_event_sources import DynamoEventSource
+from aws_cdk.aws_logs import LogGroup, RetentionDays
 from aws_cdk.aws_secretsmanager import Secret
 from constructs import Construct
 
 from ..constants import AwsAccount
 from ..helpers.helpers import generate_name, get_removal_policy
+from ..stacks.vpc_stack import VpcStack
 
 
 class CoreSpotifyOperatorsConstruct(Construct):
@@ -32,9 +36,9 @@ class CoreSpotifyOperatorsConstruct(Construct):
         artist_table_stream_arn: str | None,
         update_table_music_lambda: Function,
         requests_layer: LayerVersion,
-        **kwargs,
+        vpc_stack: VpcStack,
     ) -> None:
-        super().__init__(scope, id, **kwargs)
+        super().__init__(scope, id)
 
         get_access_token_lambda_name = generate_name('GetAccessTokenLambda', account)
         self.get_access_token_lambda = Function(
@@ -47,6 +51,12 @@ class CoreSpotifyOperatorsConstruct(Construct):
             description=f'Calls Spotify\'s API to get an access token.',
             layers=[requests_layer],
             timeout=Duration.seconds(5),
+            log_group=LogGroup(
+                self, 'GetAccessTokenLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
         )
 
         get_artist_id_lambda_name = generate_name('GetArtist-IDLambda', account)
@@ -60,6 +70,12 @@ class CoreSpotifyOperatorsConstruct(Construct):
             description=f'Queries the Spotify\'s API for the artist\'s ID.',
             layers=[requests_layer],
             timeout=Duration.seconds(5),
+            log_group=LogGroup(
+                self, 'GetArtistIDLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
         )
 
         # Grant read permissions to my Spotify client secrets
@@ -81,6 +97,12 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 'UPDATE_TABLE_MUSIC_LAMBDA': update_table_music_lambda.function_name,
             },
             timeout=Duration.seconds(10),
+            log_group=LogGroup(
+                self, 'GetLatestMusicLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
         )
         self.get_access_token_lambda.grant_invoke(_get_latest_music_lambda)
         _get_latest_music_lambda.add_event_source(
