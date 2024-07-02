@@ -45,6 +45,7 @@ class BackendStack(Stack):
             artist_table.table_stream_arn,
             table_operators.update_table_with_music_lambda,
             requests_layer,
+            vpc_stack=vpc_stack
         )
 
         # Custom construct for the step function workflow that will be triggered by an EventBridge rate expression
