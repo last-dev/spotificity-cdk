@@ -33,7 +33,7 @@ class BackendStack(Stack):
             'TableManipulatorsConstruct', 
             account,
             artist_table=artist_table,
-            vpc=vpc_stack
+            vpc_stack=vpc_stack
         )
 
         # Custom construct for the resources that will interact with the Spotify API
