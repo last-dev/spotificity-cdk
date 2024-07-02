@@ -59,7 +59,7 @@ class VpcStack(Stack):
             'Allow all HTTPS traffic from within VPCs CIDR block'
         )
         self.lambda_sg = SecurityGroup(
-            self, 'Lambda__SG', 
+            self, 'LambdaSecurityGroup', 
             vpc=self.vpc, 
             allow_all_outbound=False,
             description='Security Group for Lambda functions'
