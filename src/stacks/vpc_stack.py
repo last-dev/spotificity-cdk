@@ -1,28 +1,24 @@
-from constructs import Construct
+from aws_cdk import Stack
 from aws_cdk.aws_ec2 import (
-    InterfaceVpcEndpointAwsService,
-    GatewayVpcEndpointAwsService,
-    InterfaceVpcEndpoint,
-    SubnetConfiguration, 
     FlowLogDestination,
+    FlowLogOptions,
     FlowLogTrafficType,
     GatewayVpcEndpoint,
-    SubnetSelection,
-    FlowLogOptions,
-    SecurityGroup,
+    GatewayVpcEndpointAwsService,
+    InterfaceVpcEndpoint,
+    InterfaceVpcEndpointAwsService,
     IpAddresses,
-    SubnetType,
-    Port,
     Peer,
-    Vpc, 
+    Port,
+    SecurityGroup,
+    SubnetConfiguration,
+    SubnetSelection,
+    SubnetType,
+    Vpc,
 )
-from aws_cdk.aws_logs import (
-    RetentionDays,
-    LogGroup,
-)
-from aws_cdk import (
-    Stack
-)
+from aws_cdk.aws_logs import LogGroup, RetentionDays
+from constructs import Construct
+
 
 class VpcStack(Stack): 
     def __init__(self, scope: Construct, id: str) -> None:
