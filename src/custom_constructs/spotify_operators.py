@@ -51,6 +51,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
             description=f'Calls Spotify\'s API to get an access token.',
             layers=[requests_layer],
             timeout=Duration.seconds(5),
+            security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'GetAccessTokenLogGroup',
                 retention=RetentionDays.ONE_YEAR,
@@ -70,6 +71,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
             description=f'Queries the Spotify\'s API for the artist\'s ID.',
             layers=[requests_layer],
             timeout=Duration.seconds(5),
+            security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'GetArtistIDLogGroup',
                 retention=RetentionDays.ONE_YEAR,
@@ -97,6 +99,7 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 'UPDATE_TABLE_MUSIC_LAMBDA': update_table_music_lambda.function_name,
             },
             timeout=Duration.seconds(10),
+            security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'GetLatestMusicLogGroup',
                 retention=RetentionDays.ONE_YEAR,
