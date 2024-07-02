@@ -8,6 +8,7 @@ from src.constants import Accounts, AwsAccount
 from src.helpers.helpers import generate_name
 from src.stacks.backend_stack import BackendStack
 from src.stacks.database_stack import DatabaseStack
+from src.stacks.vpc_stack import VpcStack
 
 # Explicitly pull env info so account ID is set now, as oppose to being
 # determined at deployment w/ CloudFormation's intrinsic {"Ref":"AWS::AccountId"}
@@ -20,12 +21,18 @@ for field in fields(Accounts):
     
     if env.account == account.account_id:
         account_props = account
-        database_stack = DatabaseStack(app, generate_name('DatabaseStack', account_props), account=account_props)
+        vpc_stack = VpcStack(app, generate_name('VpcStack', account_props))
+        database_stack = DatabaseStack(
+            app, 
+            generate_name('DatabaseStack', account_props), 
+            account=account_props
+        )
         backend_stack = BackendStack(
             app,
             generate_name('BackendStack', account_props),
             account=account_props,
             artist_table=database_stack.artist_table,
+            vpc_stack=vpc_stack
         )
 
 app.synth()

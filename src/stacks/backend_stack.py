@@ -3,6 +3,8 @@ from aws_cdk.aws_dynamodb import TableV2
 from aws_cdk.aws_lambda import Code, LayerVersion, Runtime
 from constructs import Construct
 
+from .vpc_stack import VpcStack
+
 from ..constants import AwsAccount
 from ..custom_constructs.api_gateway import ApiGatewayConstruct
 from ..custom_constructs.notifier import NotifierConstruct
@@ -11,8 +13,8 @@ from ..custom_constructs.table_operators import CoreTableOperatorsConstruct
 
 
 class BackendStack(Stack):
-    def __init__(self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, **kwargs) -> None:
-        super().__init__(scope, id, **kwargs)
+    def __init__(self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, vpc_stack: VpcStack) -> None:
+        super().__init__(scope, id)
 
         # Lambda layer that bundles `requests` module
         requests_layer = LayerVersion(
