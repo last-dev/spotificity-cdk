@@ -7,7 +7,7 @@ from aws_cdk.aws_logs import LogGroup, RetentionDays
 from constructs import Construct
 
 from ..constants import AwsAccount
-from ..helpers.helpers import generate_name
+from ..helpers.helpers import generate_name, get_removal_policy
 from ..stacks.vpc_stack import VpcStack
 
 
@@ -51,7 +51,8 @@ class CoreTableOperatorsConstruct(Construct):
             security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'FetchArtistsLogGroup', 
-                retention=RetentionDays.ONE_YEAR
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
             ),
             vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
@@ -71,7 +72,8 @@ class CoreTableOperatorsConstruct(Construct):
             security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'AddArtistsLogGroup',
-                retention=RetentionDays.ONE_YEAR
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
             ),
             vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
@@ -91,7 +93,8 @@ class CoreTableOperatorsConstruct(Construct):
             security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'RemoveArtistsLogGroup',
-                retention=RetentionDays.ONE_YEAR
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
             ),
             vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
@@ -111,7 +114,8 @@ class CoreTableOperatorsConstruct(Construct):
             security_groups=[vpc_stack.lambda_sg],
             log_group=LogGroup(
                 self, 'UpdateTableWithMusicLogGroup',
-                retention=RetentionDays.ONE_YEAR
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
             ),
             vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
