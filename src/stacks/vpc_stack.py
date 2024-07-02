@@ -31,7 +31,7 @@ class VpcStack(Stack):
             vpc_name='App_VPC',
             ip_addresses=IpAddresses.cidr('10.0.0.0/24'),
             max_azs=2,
-            nat_gateways=0,
+            nat_gateways=1,
             enable_dns_hostnames=True,
             enable_dns_support=True,
             flow_logs={
@@ -42,6 +42,7 @@ class VpcStack(Stack):
             },
             subnet_configuration=[
                 SubnetConfiguration(name='Public', subnet_type=SubnetType.PUBLIC),
+                SubnetConfiguration(name='Private With NAT', subnet_type=SubnetType.PRIVATE_WITH_EGRESS),
                 SubnetConfiguration(name='Private', subnet_type=SubnetType.PRIVATE_ISOLATED)
             ]
         )
