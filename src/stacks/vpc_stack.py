@@ -62,13 +62,13 @@ class VpcStack(Stack):
             Port.tcp(443), 
             'Allow all HTTPS traffic from within VPCs CIDR block'
         )
-        self.lambda_endpoint_sg = SecurityGroup(
+        self.lambda_sg = SecurityGroup(
             self, 'Lambda__SG', 
             vpc=self.vpc, 
             allow_all_outbound=False,
             description='Security Group for Lambda functions'
         )
-        self.lambda_endpoint_sg.add_egress_rule(
+        self.lambda_sg.add_egress_rule(
             interface_endpoint_sg, 
             Port.tcp(443), 
             'Allow traffic from Lambda to Interface VPC Endpoints'
