@@ -29,7 +29,11 @@ class BackendStack(Stack):
         # Custom construct with setter, getter, and deleter Lambda functions
         # for manipulating DynamoDB table
         table_operators = CoreTableOperatorsConstruct(
-            self, 'TableManipulatorsConstruct', account, artist_table=artist_table
+            self, 
+            'TableManipulatorsConstruct', 
+            account,
+            artist_table=artist_table,
+            vpc=vpc_stack
         )
 
         # Custom construct for the resources that will interact with the Spotify API
