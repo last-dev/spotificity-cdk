@@ -25,8 +25,8 @@ from aws_cdk import (
 )
 
 class VpcStack(Stack): 
-    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
-        super().__init__(scope, id, **kwargs)
+    def __init__(self, scope: Construct, id: str) -> None:
+        super().__init__(scope, id)
         
         # VPC and Flowlogs
         log_group = LogGroup(self, 'VPCLogGroup', retention=RetentionDays.ONE_YEAR)
@@ -60,7 +60,7 @@ class VpcStack(Stack):
         interface_endpoint_sg.add_ingress_rule(
             Peer.ipv4(self.vpc.vpc_cidr_block), 
             Port.tcp(443), 
-            'Allow all HTTPS traffic from within VPC\'s CIDR block'
+            'Allow all HTTPS traffic from within VPCs CIDR block'
         )
         self.lambda_endpoint_sg = SecurityGroup(
             self, 'Lambda__SG', 
@@ -112,7 +112,7 @@ class VpcStack(Stack):
             subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
         self.step_functions_interface_endpoint = InterfaceVpcEndpoint(
-            self, 'StepFunctionsEndpoint',
+            self, 'StepFunctionEndpoint',
             vpc=self.vpc,
             service=InterfaceVpcEndpointAwsService.STEP_FUNCTIONS,
             private_dns_enabled=True,
