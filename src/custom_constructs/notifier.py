@@ -24,16 +24,7 @@ class NotifierConstruct(Construct):
     by any of the artists I follow.
     """
 
-    def __init__(
-        self,
-        scope: Construct,
-        id: str,
-        account: AwsAccount,
-        artist_table: TableV2,
-        requests_layer: LayerVersion,
-        access_token_lambda: Function,
-        vpc_stack: VpcStack
-    ) -> None:
+    def __init__(self, scope: Construct, id: str, account: AwsAccount, artist_table: TableV2, requests_layer: LayerVersion, access_token_lambda: Function, vpc_stack: VpcStack) -> None:
         super().__init__(scope, id)
 
         # All Lambdas throughout our StepFunction
