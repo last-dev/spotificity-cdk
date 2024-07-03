@@ -54,6 +54,8 @@ class NotifierConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
+            security_groups=[vpc_stack.lambda_sg],
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
         artist_table.grant_read_data(_fetch_artists_list_lambda)
 
@@ -75,6 +77,8 @@ class NotifierConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
+            security_groups=[vpc_stack.lambda_sg],
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
         _email_if_no_artists_lambda.add_to_role_policy(
             PolicyStatement(
@@ -100,6 +104,8 @@ class NotifierConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
+            security_groups=[vpc_stack.lambda_sg],
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
         )
 
         update_table_music_lambda_name = generate_name('UpdateTableMusicLambda-ForNotifier', account)
@@ -118,6 +124,8 @@ class NotifierConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
+            security_groups=[vpc_stack.lambda_sg],
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
         artist_table.grant_write_data(_update_table_music_lambda)
 
@@ -137,6 +145,8 @@ class NotifierConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
+            security_groups=[vpc_stack.lambda_sg],
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
         )
         _email_new_music_lambda.add_to_role_policy(
             PolicyStatement(
