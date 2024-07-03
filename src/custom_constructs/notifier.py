@@ -1,9 +1,11 @@
 from aws_cdk import Duration
 from aws_cdk.aws_dynamodb import TableV2
+from aws_cdk.aws_ec2 import SubnetSelection, SubnetType
 from aws_cdk.aws_events import Rule, Schedule
 from aws_cdk.aws_events_targets import SfnStateMachine
 from aws_cdk.aws_iam import Effect, PolicyStatement
 from aws_cdk.aws_lambda import Code, Function, LayerVersion, Runtime
+from aws_cdk.aws_logs import LogGroup, RetentionDays
 from aws_cdk.aws_secretsmanager import Secret
 from aws_cdk.aws_sns import Topic
 from aws_cdk.aws_stepfunctions import Choice, Condition, StateMachine
@@ -47,6 +49,11 @@ class NotifierConstruct(Construct):
             layers=[requests_layer],
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
             timeout=Duration.seconds(10),
+            log_group=LogGroup(
+                self, 'NotifierFetchArtistsLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
         )
         artist_table.grant_read_data(_fetch_artists_list_lambda)
 
@@ -63,6 +70,11 @@ class NotifierConstruct(Construct):
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='message_if_no_artists.handler',
             environment={'SNS_TOPIC_ARN': _topic.topic_arn},
+            log_group=LogGroup(
+                self, 'NotifierMessageIfNoArtistsLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
         )
         _email_if_no_artists_lambda.add_to_role_policy(
             PolicyStatement(
@@ -83,6 +95,11 @@ class NotifierConstruct(Construct):
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='get_latest_music_for_notifier.handler',
             layers=[requests_layer],
+            log_group=LogGroup(
+                self, 'NotifierFetchMusicLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
         )
 
         update_table_music_lambda_name = generate_name('UpdateTableMusicLambda-ForNotifier', account)
@@ -96,6 +113,11 @@ class NotifierConstruct(Construct):
             code=Code.from_asset('src/lambdas/NotifierConstructLambdas'),
             handler='update_table_music_for_notifier.handler',
             environment={'ARTIST_TABLE_NAME': artist_table.table_name},
+            log_group=LogGroup(
+                self, 'NotifierUpdateTableMusicLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
         )
         artist_table.grant_write_data(_update_table_music_lambda)
 
@@ -110,6 +132,11 @@ class NotifierConstruct(Construct):
             handler='message_new_music.handler',
             environment={'SNS_TOPIC_ARN': _topic.topic_arn},
             timeout=Duration.seconds(5),
+            log_group=LogGroup(
+                self, 'NotifierMessageNewMusicLogGroup',
+                retention=RetentionDays.ONE_YEAR,
+                removal_policy=get_removal_policy(account.stage)
+            ),
         )
         _email_new_music_lambda.add_to_role_policy(
             PolicyStatement(
