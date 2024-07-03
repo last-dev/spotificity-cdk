@@ -11,7 +11,8 @@ from aws_cdk.aws_stepfunctions_tasks import LambdaInvoke
 from constructs import Construct
 
 from ..constants import AwsAccount
-from ..helpers.helpers import generate_name
+from ..helpers.helpers import generate_name, get_removal_policy
+from ..stacks.vpc_stack import VpcStack
 
 
 class NotifierConstruct(Construct):
@@ -29,9 +30,9 @@ class NotifierConstruct(Construct):
         artist_table: TableV2,
         requests_layer: LayerVersion,
         access_token_lambda: Function,
-        **kwargs,
+        vpc_stack: VpcStack
     ) -> None:
-        super().__init__(scope, id, **kwargs)
+        super().__init__(scope, id)
 
         # All Lambdas throughout our StepFunction
         get_artists_list_lambda_name = generate_name('GetArtistsListFor-ForNotifier', account)

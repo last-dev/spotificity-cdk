@@ -56,6 +56,7 @@ class BackendStack(Stack):
             artist_table,
             requests_layer,
             spotify_operators.get_access_token_lambda,
+            vpc_stack=vpc_stack
         )
 
         # Custom construct for the API Gateway that will be used to invoke the Lambda functions
