@@ -30,7 +30,7 @@ class VpcStack(Stack):
             self, 'VPC', 
             vpc_name='App_VPC',
             ip_addresses=IpAddresses.cidr('10.0.0.0/24'),
-            max_azs=2,
+            max_azs=1,
             nat_gateways=1,
             enable_dns_hostnames=True,
             enable_dns_support=True,
