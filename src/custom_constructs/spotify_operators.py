@@ -57,7 +57,8 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS),
+            vpc=vpc_stack.vpc
         )
 
         get_artist_id_lambda_name = generate_name('GetArtist-IDLambda', account)
@@ -77,7 +78,8 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS),
+            vpc=vpc_stack.vpc
         )
 
         # Grant read permissions to my Spotify client secrets
@@ -105,7 +107,8 @@ class CoreSpotifyOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_WITH_EGRESS),
+            vpc=vpc_stack.vpc
         )
         self.get_access_token_lambda.grant_invoke(_get_latest_music_lambda)
         _get_latest_music_lambda.add_event_source(

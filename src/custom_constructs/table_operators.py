@@ -54,7 +54,8 @@ class CoreTableOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED),
+            vpc=vpc_stack.vpc
         )
         artist_table.grant_read_data(self.fetch_artists_lambda_)
 
@@ -75,7 +76,8 @@ class CoreTableOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED),
+            vpc=vpc_stack.vpc
         )
         artist_table.grant_write_data(self.add_artist_lambda_)
 
@@ -96,7 +98,8 @@ class CoreTableOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED),
+            vpc=vpc_stack.vpc
         )
         artist_table.grant_write_data(self.remove_artist_lambda_)
 
@@ -117,6 +120,7 @@ class CoreTableOperatorsConstruct(Construct):
                 retention=RetentionDays.ONE_YEAR,
                 removal_policy=get_removal_policy(account.stage)
             ),
-            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED)
+            vpc_subnets=SubnetSelection(subnet_type=SubnetType.PRIVATE_ISOLATED),
+            vpc=vpc_stack.vpc
         )
         artist_table.grant_write_data(self.update_table_with_music_lambda_)
