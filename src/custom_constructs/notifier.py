@@ -166,9 +166,7 @@ class NotifierConstruct(Construct):
             payload_response_only=True,
         )
 
-        _publish_results_task = LambdaInvoke(
-            self, 'PublishResults', lambda_function=_email_new_music_lambda  # type: ignore
-        )
+        _publish_results_task = LambdaInvoke(self, 'PublishResults', lambda_function=_email_new_music_lambda)  # type: ignore
 
         # Connect tasks to be in order
         _fetch_access_token_task.next(_scan_task)

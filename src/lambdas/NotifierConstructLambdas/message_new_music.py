@@ -88,15 +88,11 @@ def send_email_with_new_music(event: list) -> None:
         if artist.get('last_album_details'):
             last_album_name = artist['last_album_details']['last_album_name']
             last_album_release_date = artist['last_album_details']['last_album_release_date']
-            email_strings_list.append(
-                f'{index}. \n\t{artist_name} dropped "{last_album_name}" on {last_album_release_date}.'
-            )
+            email_strings_list.append(f'{index}. \n\t{artist_name} dropped "{last_album_name}" on {last_album_release_date}.')
         elif artist.get('last_single_details'):
             last_single_name = artist['last_single_details']['last_single_name']
             last_single_release_date = artist['last_single_details']['last_single_release_date']
-            email_strings_list.append(
-                f'{index}. \n\t{artist_name} dropped "{last_single_name}" on {last_single_release_date}.'
-            )
+            email_strings_list.append(f'{index}. \n\t{artist_name} dropped "{last_single_name}" on {last_single_release_date}.')
     log.debug(f'Formatted new music into a string: {email_strings_list}')
 
     # Join all strings together to create one long string for the email

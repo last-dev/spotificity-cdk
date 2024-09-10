@@ -43,9 +43,7 @@ def handler(event, context) -> dict:
                 'M': {
                     'last_single_name': {'S': last_single_details['last_single_name']},
                     'last_single_release_date': {'S': last_single_details['last_single_release_date']},
-                    'last_single_artists': {
-                        'L': [{'S': artist} for artist in last_single_details['last_single_artists']]
-                    },
+                    'last_single_artists': {'L': [{'S': artist} for artist in last_single_details['last_single_artists']]},
                 }
             }
 
@@ -85,9 +83,7 @@ def handler(event, context) -> dict:
                 response['Attributes']['last_single_details']['M']['last_single_name']['S']
                 != converted_last_single_details['M']['last_single_name']['S']
             ):
-                log.debug(
-                    f'{artist_name} dropped a new single! Adding {artist_name} to list of artists with changes...'
-                )
+                log.debug(f'{artist_name} dropped a new single! Adding {artist_name} to list of artists with changes...')
                 artists_with_changes.append({'artist_name': artist_name, 'last_single_details': last_single_details})
             else:
                 log.debug(f'No changes in {artist_name}\'s music.')

@@ -17,7 +17,7 @@ app = App()
 for field in fields(Accounts):
     stage = field.name
     account: AwsAccount = getattr(Accounts, stage)
-    
+
     if env.account == account.account_id:
         account_props = account
         database_stack = DatabaseStack(app, generate_name('DatabaseStack', account_props), account=account_props)

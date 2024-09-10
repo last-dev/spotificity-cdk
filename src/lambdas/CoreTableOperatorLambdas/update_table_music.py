@@ -34,18 +34,14 @@ def handler(event: dict, context) -> dict:
                     'M': {
                         'last_album_name': {'S': last_album_details['last_album_name']},
                         'last_album_release_date': {'S': last_album_details['last_album_release_date']},
-                        'last_album_artists': {
-                            'L': [{'S': artist} for artist in last_album_details['last_album_artists']]
-                        },
+                        'last_album_artists': {'L': [{'S': artist} for artist in last_album_details['last_album_artists']]},
                     }
                 },
                 ':last_single_details': {
                     'M': {
                         'last_single_name': {'S': last_single_details['last_single_name']},
                         'last_single_release_date': {'S': last_single_details['last_single_release_date']},
-                        'last_single_artists': {
-                            'L': [{'S': artist} for artist in last_single_details['last_single_artists']]
-                        },
+                        'last_single_artists': {'L': [{'S': artist} for artist in last_single_details['last_single_artists']]},
                     }
                 },
             },

@@ -44,8 +44,7 @@ def handler(event: dict, context) -> dict:
 
             # Extract out only artist ID and name. Then add all artists into a list of dicts
             current_artists_with_id: list[dict] = [
-                {'artist_id': artist['artist_id']['S'], 'artist_name': artist['artist_name']['S']}
-                for artist in response['Items']
+                {'artist_id': artist['artist_id']['S'], 'artist_name': artist['artist_name']['S']} for artist in response['Items']
             ]
 
             # Extract out only artist name. Then add all artists into a list
