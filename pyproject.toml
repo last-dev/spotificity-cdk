@@ -5,7 +5,7 @@ testpaths = ["tests"]
 
 [tool.black]
 skip-string-normalization = true
-line-length = 120
+line-length = 130
 extend-exclude = '''
 (
     cdk\.out
@@ -20,6 +20,6 @@ extend-exclude = '''
 [tool.isort]
 known_first_party = ["cdk", "cli"]
 skip = ["cdk.out", ".venv", "__pycache__", ".git"]
-line_length = 120
+line_length = 130
 profile = "black"
 verbose = true

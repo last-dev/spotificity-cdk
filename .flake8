@@ -8,5 +8,5 @@ ignore =
     W503,  
     # Line too long (handled by Black with max_line_length set to 100)
     E501   
-max_line_length = 100
+max_line_length = 130
 exclude = cdk.out, .venv, __pycache__, .git, colors.py
