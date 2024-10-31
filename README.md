@@ -1,6 +1,6 @@
 # SpotificityCDK
 
-AWS CDK code that spins up the cloud infra for my 'spotificity-cli' crud app.
+AWS CDK code that spins up the cloud infra for my [spotificity-cli](https://github.com/last-dev/spotificity-cli) crud app.
 
 ## **Deployment**
 
